@@ -1,0 +1,19 @@
+classTweaker	v1	official
+
+# MC-ECA needs a few private Minecraft setters to style the NPC and its speech bubble.
+# "accessible" makes them public at compile time and at runtime.
+
+# NPC body (mannequin): skin + the small text shown under its name
+accessible	method	net/minecraft/world/entity/decoration/Mannequin	setProfile	(Lnet/minecraft/world/item/component/ResolvableProfile;)V
+accessible	method	net/minecraft/world/entity/decoration/Mannequin	setDescription	(Lnet/minecraft/network/chat/Component;)V
+accessible	method	net/minecraft/world/entity/decoration/Mannequin	setHideDescription	(Z)V
+
+# Speech bubble (text display)
+accessible	method	net/minecraft/world/entity/Display$TextDisplay	setText	(Lnet/minecraft/network/chat/Component;)V
+accessible	method	net/minecraft/world/entity/Display$TextDisplay	setLineWidth	(I)V
+accessible	method	net/minecraft/world/entity/Display$TextDisplay	setBackgroundColor	(I)V
+accessible	method	net/minecraft/world/entity/Display	setBillboardConstraints	(Lnet/minecraft/world/entity/Display$BillboardConstraints;)V
+accessible	method	net/minecraft/world/entity/Display	setTransformation	(Lcom/mojang/math/Transformation;)V
+accessible	method	net/minecraft/world/entity/Display	setPosRotInterpolationDuration	(I)V
+accessible	method	net/minecraft/world/entity/Display	setViewRange	(F)V
+accessible	method	net/minecraft/world/entity/Display	setBrightnessOverride	(Lnet/minecraft/util/Brightness;)V

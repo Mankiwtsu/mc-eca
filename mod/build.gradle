@@ -1,0 +1,61 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+loom {
+	// Opens up a few private Minecraft methods (see the file for the list).
+	accessWidenerPath = file("src/main/resources/mceca.classtweaker")
+}
+
+// Automated in-game test (only for developing the mod; not part of the released jar).
+// Run with: ./gradlew runClientGameTest   (see docs/maintainers/building-the-mod.md)
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "mceca-gametest"
+		enableClientGameTests = true
+		enableGameTests = false
+		eula = true
+	}
+}
+
+dependencies {
+	// Versions live in gradle.properties
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	// Ship the license inside the jar. (Read the name now: the configuration cache does not
+	// allow touching `project` while the task runs.)
+	def baseName = project.archives_base_name
+	from("../LICENSE") {
+		rename { "${it}_${baseName}" }
+	}
+}

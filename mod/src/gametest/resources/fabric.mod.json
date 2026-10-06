@@ -1,0 +1,12 @@
+{
+	"schemaVersion": 1,
+	"id": "mceca-gametest",
+	"version": "1.0.0",
+	"name": "MC-ECA in-game test",
+	"environment": "*",
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"io.github.mceca.test.NpcDemoGameTest"
+		]
+	}
+}

@@ -1,0 +1,26 @@
+{
+	"schemaVersion": 1,
+	"id": "mceca",
+	"version": "${version}",
+	"name": "MC-ECA",
+	"description": "Embodied Conversational Agents in Minecraft: an NPC body you control from Python (or any language) over a local socket, with push-to-talk voice.",
+	"authors": [],
+	"license": "MIT",
+	"icon": "assets/mceca/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"io.github.mceca.McEca"
+		],
+		"client": [
+			"io.github.mceca.client.McEcaClient"
+		]
+	},
+	"accessWidener": "mceca.classtweaker",
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

@@ -1,0 +1,59 @@
+# Publishing a release: bump the version (see docs/maintainers/building-the-mod.md),
+# then push a tag:   git tag v0.5.0 && git push origin v0.5.0
+# This builds the mod and the one-click install pack and attaches both to a GitHub
+# release, with the matching CHANGELOG.md section as release notes.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+      - uses: gradle/actions/setup-gradle@v6
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Check that the tag matches the version
+        run: |
+          version=$(grep '^mod_version=' mod/gradle.properties | cut -d= -f2)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match mod_version=$version in mod/gradle.properties"
+            exit 1
+          fi
+
+      - name: Build the mod
+        working-directory: mod
+        run: ./gradlew build --no-daemon
+
+      - name: Build the install pack (.mrpack)
+        run: python tools/make_mrpack.py
+
+      - name: Release notes from CHANGELOG.md
+        run: python tools/release_notes.py "${GITHUB_REF_NAME#v}" > notes.md
+
+      - name: Create (or update) the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # If the tag was pushed again (e.g. moved to a fixed commit), update the existing release.
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" --title "MC-ECA ${GITHUB_REF_NAME#v}" --notes-file notes.md
+            gh release upload "$GITHUB_REF_NAME" --clobber dist/*.mrpack mod/build/libs/mc-eca-*.jar
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              --title "MC-ECA ${GITHUB_REF_NAME#v}" \
+              --notes-file notes.md \
+              dist/*.mrpack mod/build/libs/mc-eca-*.jar
+          fi

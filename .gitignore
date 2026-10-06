@@ -1,0 +1,26 @@
+# secrets - never commit your API key
+.env
+
+# python
+.venv/
+__pycache__/
+*.egg-info/
+
+# gradle / minecraft dev
+mod/.gradle/
+mod/build/
+mod/run/
+mod/build/run/
+*.log
+
+# IDEs / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# built jars are published as GitHub release assets
+dist/
+
+# study logs contain participant data - never commit them
+logs/
